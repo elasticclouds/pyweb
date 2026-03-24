@@ -47,5 +47,4 @@ This project is a Flask-based web application. Below are the steps to set up and
 - Ensure all static assets are correctly placed to avoid 404 errors.
 - Update the `requirements.txt` file if additional dependencies are added.
 
-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
 
