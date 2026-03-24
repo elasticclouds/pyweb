@@ -48,3 +48,23 @@ This project is a Flask-based web application. Below are the steps to set up and
 - Update the `requirements.txt` file if additional dependencies are added.
 
 
+set -e
+python --version
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+if [ -f requirements.txt ]; then
+  pip install -r requirements.txt
+fi
+
+# if command -v flake8 >/dev/null 2>&1; then
+#   flake8 .
+# else
+#   echo "flake8 not installed, skipping lint step"
+# fi
+
+# if [ -f pytest.ini ] || [ -d tests ] || [ -f setup.cfg ]; then
+#   pytest -q
+# else
+#   echo "No pytest config or tests folder found; skipping tests"
+fi

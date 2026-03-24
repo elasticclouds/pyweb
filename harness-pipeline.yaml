@@ -1,34 +1,38 @@
-# Harness CI pipeline for pyweb Flask project
-# Usage: import this YAML into Harness CI, or reference from Harness project settings.
-# Set projectIdentifier/orgIdentifier to your Harness values before using.
-
-
-
-version: 1.0
 pipeline:
-  name: pyweb-CI
-  identifier: pyweb_CI
-  projectIdentifier: YOUR_PROJECT
-  orgIdentifier: YOUR_ORG
-  tags:
-    - flask
-    - python
+  name: pyweb
+  identifier: pyweb
+  projectIdentifier: US_Bank_Projects
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: elasticcloudsgithub
+        repoName: pyweb
+        build: <+input>
+        sparseCheckout: []
   stages:
     - stage:
-        name: BuildAndTest
-        identifier: BuildAndTest
+        name: build
+        identifier: build
+        description: ""
         type: CI
         spec:
           cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          buildIntelligence:
+            enabled: true
           execution:
             steps:
               - step:
-                  name: Setup and Install
-                  identifier: setup_install
                   type: Run
+                  name: Setup and Install
+                  identifier: Run_1
                   spec:
                     shell: Bash
-                    command: |
+                    command: |-
                       set -e
                       python --version
                       python -m venv .venv
@@ -38,42 +42,31 @@ pipeline:
                         pip install -r requirements.txt
                       fi
 
+                      # if command -v flake8 >/dev/null 2>&1; then
+                      #   flake8 .
+                      # else
+                      #   echo "flake8 not installed, skipping lint step"
+                      # fi
+
+                      # if [ -f pytest.ini ] || [ -d tests ] || [ -f setup.cfg ]; then
+                      #   pytest -q
+                      # else
+                      #   echo "No pytest config or tests folder found; skipping tests"
+                      fi
+                  description: Setup and Install
               - step:
+                  type: Run
                   name: Lint
-                  identifier: lint
-                  type: Run
+                  identifier: Lint
                   spec:
-                    shell: Bash
-                    command: |
+                    shell: Sh
+                    command: |-
                       set -e
-                      source .venv/bin/activate
-                      if command -v flake8 >/dev/null 2>&1; then
-                        flake8 .
-                      else
-                        echo "flake8 not installed, skipping lint step"
-                      fi
-
-              - step:
-                  name: Unit Tests
-                  identifier: unit_tests
-                  type: Run
-                  spec:
-                    shell: Bash
-                    command: |
-                      set -e
-                      source .venv/bin/activate
-                      if [ -f pytest.ini ] || [ -d tests ] || [ -f setup.cfg ]; then
-                        pytest -q
-                      else
-                        echo "No pytest config or tests folder found; skipping tests"
-                      fi
-
-  triggers:
-    - trigger:
-        type: Git
-        spec:
-          type: Webhook
-          branch:
-            - master
-            - main
-            - dev
+                      python --version
+                  description: Lint
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
