@@ -10,6 +10,7 @@ pipeline:
         connectorRef: pydemo
         repoName: pydemo
         build: <+input>
+        sparseCheckout: []
   stages:
     - stage:
         name: Build
